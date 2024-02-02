@@ -10,11 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+from utils import get_public_IPv4_DNS
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -25,7 +25,9 @@ SECRET_KEY = "django-insecure-m)2@#+@%soc+!co)biv&z_rd9!s$ca^9f6a)*nk6e2*wdt2^cn
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+AWS_HOST = get_public_IPv4_DNS()
+
+ALLOWED_HOSTS = [AWS_HOST]
 
 
 # Application definition
