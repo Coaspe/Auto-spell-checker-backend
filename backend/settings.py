@@ -10,12 +10,38 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
-from utils import get_public_IPv4_DNS
 from pathlib import Path
+import subprocess
+import re
+
+
+def get_external_ip():
+    try:
+        result = subprocess.check_output(["curl", "ifconfig.me"])
+        external_ip = result.decode("utf-8").strip()
+        return external_ip
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+        return None
+
+
+def get_public_IPv4_DNS():
+    try:
+        ip = get_external_ip()
+        result = subprocess.check_output(["dig", "-x", ip], universal_newlines=True)
+        regex = r"((?:[a-zA-Z0-9-]+\.){2,}[a-zA-Z0-9-]+\.amazonaws\.com)"
+        match = re.search(regex, result)
+        if match:
+            return match.group(1)
+        else:
+            return None
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
+        return None
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -26,7 +52,6 @@ SECRET_KEY = "django-insecure-m)2@#+@%soc+!co)biv&z_rd9!s$ca^9f6a)*nk6e2*wdt2^cn
 DEBUG = True
 
 AWS_HOST = get_public_IPv4_DNS()
-
 ALLOWED_HOSTS = [AWS_HOST]
 
 
