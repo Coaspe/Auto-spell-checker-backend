@@ -16,7 +16,7 @@ AWS_ACCESS_KEY_ID = "AWS_ACCESS_KEY_ID"
 AWS_SECRET_ACCESS_KEY = "AWS_SECRET_ACCESS_KEY"
 CONTENT_TYPE = "application/octet-stream"
 CONTENT_DISPOSITION = "Content-Disposition"
-CONTENT_DISPOSITION_VAL = 'attachment; filename="auto spell checker.exe"'
+CONTENT_DISPOSITION_VAL = "attachment; filename="
 BODY = "Body"
 
 
@@ -45,7 +45,9 @@ def download_exe(request: HttpRequest):
         file_content = response[BODY].read()
 
         response = HttpResponse(file_content, content_type=CONTENT_TYPE)
-        response[CONTENT_DISPOSITION] = CONTENT_DISPOSITION_VAL
+        response[CONTENT_DISPOSITION] = (
+            CONTENT_DISPOSITION_VAL + f'"{request.GET[OBJECT_KEY]}"'
+        )
 
         return response
 
